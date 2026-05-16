@@ -1,0 +1,33 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+<h1>Create Account</h1>
+
+{% if form.errors %}
+    <div class="error-box">
+        Please check your information and try again.
+    </div>
+{% endif %}
+
+<form method="post" class="form-box">
+    {% csrf_token %}
+
+    <label>Username</label>
+    <input type="text" name="username" placeholder="Enter username" required>
+
+    <label>Password</label>
+    <input type="password" name="password1" placeholder="Enter password" required>
+
+    <label>Confirm Password</label>
+    <input type="password" name="password2" placeholder="Confirm password" required>
+
+    <small>Password must be at least 8 characters.</small>
+
+    <button type="submit" class="btn btn-full">Register</button>
+</form>
+
+<p>
+    Already have an account?
+    <a href="{% url 'login' %}">Login</a>
+</p>
+{% endblock %}

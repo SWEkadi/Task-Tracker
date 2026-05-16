@@ -1,0 +1,21 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+<h1>Add Task</h1>
+
+<form method="post" class="form-box">
+    {% csrf_token %}
+
+    <label>Title</label>
+    <input type="text" name="title" placeholder="Enter task title">
+
+    <label>Description</label>
+    <textarea name="description" rows="4" placeholder="Enter task description"></textarea>
+
+    <button type="submit" class="btn btn-full">Save Task</button>
+</form>
+
+<p>
+    <a href="{% url 'task_list' %}">Back to tasks</a>
+</p>
+{% endblock %}
