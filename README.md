@@ -1,1 +1,1 @@
-Task Tracker is a simple Django-based web application developed for managing daily tasks efficiently. The system allows users to register, log in, add tasks, delete tasks, and track task completion status. This project is used for applying software maintenance and evolution concepts using Jira Software and GitHub integration.
+
