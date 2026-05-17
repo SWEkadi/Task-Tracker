@@ -123,6 +123,15 @@
             margin-bottom: 15px;
         }
 
+        .message {
+            background-color: #dcfce7;
+            color: #166534;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
         a {
             color: #2563eb;
             font-weight: bold;
@@ -134,9 +143,21 @@
     </style>
 </head>
 <body>
+
     <div class="container {% if user.is_authenticated %}wide-container{% endif %}">
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
         {% block content %}
         {% endblock %}
+
     </div>
+
 </body>
 </html>
