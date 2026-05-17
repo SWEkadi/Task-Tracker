@@ -13,6 +13,23 @@
     </form>
 </div>
 
+<div class="dashboard">
+    <div class="dashboard-card">
+        <h3>To Do</h3>
+        <p>{{ todo_count }}</p>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>In Progress</h3>
+        <p>{{ in_progress_count }}</p>
+    </div>
+
+    <div class="dashboard-card">
+        <h3>Done</h3>
+        <p>{{ done_count }}</p>
+    </div>
+</div>
+
 <a href="{% url 'add_task' %}" class="btn">Add Task</a>
 <hr>
 

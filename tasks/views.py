@@ -24,7 +24,19 @@ def register(request):
 @login_required
 def task_list(request):
     tasks = Task.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'tasks/task_list.html', {'tasks': tasks})
+
+    todo_count = tasks.filter(status='todo').count()
+    in_progress_count = tasks.filter(status='in_progress').count()
+    done_count = tasks.count()  # intentional bug for KAN-10
+
+    context = {
+        'tasks': tasks,
+        'todo_count': todo_count,
+        'in_progress_count': in_progress_count,
+        'done_count': done_count,
+    }
+
+    return render(request, 'tasks/task_list.html', context)
 
 
 @login_required
