@@ -13,6 +13,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, "Account created successfully.")
             return redirect('task_list')
     else:
         form = UserCreationForm()
@@ -44,6 +45,8 @@ def add_task(request):
             due_date=due_date or None
         )
 
+        messages.success(request, "Task added successfully.")
+
         return redirect('task_list')
 
     return render(request, 'tasks/add_task.html')
@@ -53,12 +56,16 @@ def add_task(request):
 def delete_task(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
     task.delete()
+
+    messages.success(request, "Task deleted successfully.")
+
     return redirect('task_list')
 
 @login_required
 def toggle_task_status(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
 
+    task.is_completed = not task.is_completed
     if task.status == 'todo':
         task.status = 'in_progress'
         task.is_completed = False
@@ -70,6 +77,9 @@ def toggle_task_status(request, task_id):
         task.is_completed = False
 
     task.save()
+
+    messages.success(request, "Task status updated successfully.")
+
     return redirect('task_list')
 
 
@@ -91,6 +101,8 @@ def edit_task(request, task_id):
         task.due_date = due_date or None
 
         task.save()
+
+        messages.success(request, "Task updated successfully.")
 
         return redirect('task_list')
 
