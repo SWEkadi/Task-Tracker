@@ -55,3 +55,16 @@ def toggle_task_status(request, task_id):
     task.is_completed = not task.is_completed
     task.save()
     return redirect('task_list')
+
+
+@login_required
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id, user=request.user)
+
+    if request.method == 'POST':
+        task.title = request.POST.get('title')
+        task.description = request.POST.get('description')
+        task.save()
+        return redirect('task_list')
+
+    return render(request, 'tasks/edit_task.html', {'task': task})

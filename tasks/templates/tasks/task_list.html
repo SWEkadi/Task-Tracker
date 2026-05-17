@@ -37,6 +37,7 @@
             </p>
 
             <div class="actions">
+                <a href="{% url 'edit_task' task.id %}" class="btn">Edit</a>
                 <a href="{% url 'toggle_task_status' task.id %}" class="btn">Change Status</a>
                 <a href="{% url 'delete_task' task.id %}" class="btn btn-danger">Delete</a>
             </div>
