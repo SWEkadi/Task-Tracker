@@ -7,6 +7,15 @@ from django.utils import timezone
 from .models import Task
 
 
+def get_priority_choices():
+    return Task.PRIORITY_CHOICES
+
+
+def is_valid_priority(priority):
+    valid_priorities = [choice[0] for choice in Task.PRIORITY_CHOICES]
+    return priority in valid_priorities
+
+
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -44,34 +53,43 @@ def add_task(request):
         title = request.POST.get('title', '').strip()
         description = request.POST.get('description', '').strip()
         due_date = request.POST.get('due_date', '')
+        priority = request.POST.get('priority', 'medium')
+
+        context = {
+            'title': title,
+            'description': description,
+            'due_date': due_date,
+            'priority': priority,
+            'priority_choices': get_priority_choices(),
+        }
 
         if not title:
             messages.error(request, "Task title cannot be empty.")
-            return render(request, 'tasks/add_task.html', {
-                'title': title,
-                'description': description,
-                'due_date': due_date,
-            })
+            return render(request, 'tasks/add_task.html', context)
+
+        if not is_valid_priority(priority):
+            messages.error(request, "Invalid task priority.")
+            return render(request, 'tasks/add_task.html', context)
 
         if due_date and due_date < timezone.now().date().isoformat():
             messages.error(request, "Due date cannot be in the past.")
-            return render(request, 'tasks/add_task.html', {
-                'title': title,
-                'description': description,
-                'due_date': due_date,
-            })
+            return render(request, 'tasks/add_task.html', context)
 
         Task.objects.create(
             user=request.user,
             title=title,
             description=description,
-            due_date=due_date or None
+            due_date=due_date or None,
+            priority=priority
         )
 
         messages.success(request, "Task added successfully.")
         return redirect('task_list')
 
-    return render(request, 'tasks/add_task.html')
+    return render(request, 'tasks/add_task.html', {
+        'priority_choices': get_priority_choices(),
+        'priority': 'medium',
+    })
 
 
 @login_required
@@ -109,31 +127,39 @@ def edit_task(request, task_id):
         title = request.POST.get('title', '').strip()
         description = request.POST.get('description', '').strip()
         due_date = request.POST.get('due_date', '')
+        priority = request.POST.get('priority', 'medium')
+
+        context = {
+            'task': task,
+            'title': title,
+            'description': description,
+            'due_date': due_date,
+            'priority': priority,
+            'priority_choices': get_priority_choices(),
+        }
 
         if not title:
             messages.error(request, "Task title cannot be empty.")
-            return render(request, 'tasks/edit_task.html', {
-                'task': task,
-                'title': title,
-                'description': description,
-                'due_date': due_date,
-            })
+            return render(request, 'tasks/edit_task.html', context)
+
+        if not is_valid_priority(priority):
+            messages.error(request, "Invalid task priority.")
+            return render(request, 'tasks/edit_task.html', context)
 
         if due_date and due_date < timezone.now().date().isoformat():
             messages.error(request, "Due date cannot be in the past.")
-            return render(request, 'tasks/edit_task.html', {
-                'task': task,
-                'title': title,
-                'description': description,
-                'due_date': due_date,
-            })
+            return render(request, 'tasks/edit_task.html', context)
 
         task.title = title
         task.description = description
         task.due_date = due_date or None
+        task.priority = priority
         task.save()
 
         messages.success(request, "Task updated successfully.")
         return redirect('task_list')
 
-    return render(request, 'tasks/edit_task.html', {'task': task})
+    return render(request, 'tasks/edit_task.html', {
+        'task': task,
+        'priority_choices': get_priority_choices(),
+    })

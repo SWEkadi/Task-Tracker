@@ -15,6 +15,13 @@
     <label>Due Date</label>
     <input type="date" name="due_date" value="{{ due_date|default:'' }}">
 
+    <label>Priority</label>
+    <select name="priority" required>
+        {% for value, label in priority_choices %}
+            <option value="{{ value }}" {% if priority == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+
     <button type="submit" class="btn btn-full">Save Task</button>
 </form>
 

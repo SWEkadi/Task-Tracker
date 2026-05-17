@@ -44,6 +44,11 @@
                 {{ task.due_date|default:"No due date" }}
             </p>
 
+            <p>
+                Priority:
+                <span class="priority priority-{{ task.priority }}">{{ task.get_priority_display }}</span>
+            </p>
+
             <p class="status">
                 Status:
                 {% if task.status == 'done' %}
