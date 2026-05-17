@@ -48,11 +48,20 @@ def delete_task(request, task_id):
     task.delete()
     return redirect('task_list')
 
-
 @login_required
 def toggle_task_status(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
-    task.is_completed = not task.is_completed
+
+    if task.status == 'todo':
+        task.status = 'in_progress'
+        task.is_completed = False
+    elif task.status == 'in_progress':
+        task.status = 'done'
+        task.is_completed = True
+    else:
+        task.status = 'todo'
+        task.is_completed = False
+
     task.save()
     return redirect('task_list')
 
