@@ -46,10 +46,12 @@
 
             <p class="status">
                 Status:
-                {% if task.is_completed %}
-                    Completed
+                {% if task.status == 'done' %}
+                    <span class="status-done">Done</span>
+                {% elif task.status == 'in_progress' %}
+                    <span class="status-progress">In Progress</span>
                 {% else %}
-                    Pending
+                    <span class="status-todo">To Do</span>
                 {% endif %}
             </p>
 

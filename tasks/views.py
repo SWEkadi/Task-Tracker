@@ -58,6 +58,7 @@ def add_task(request):
         )
 
         messages.success(request, "Task added successfully.")
+
         return redirect('task_list')
 
     return render(request, 'tasks/add_task.html')
@@ -68,18 +69,29 @@ def delete_task(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
     task.delete()
 
-    messages.error(request, "Task deleted successfully.")
-    return redirect('task_list')
+    messages.success(request, "Task deleted successfully.")
 
+    return redirect('task_list')
 
 @login_required
 def toggle_task_status(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
 
     task.is_completed = not task.is_completed
+    if task.status == 'todo':
+        task.status = 'in_progress'
+        task.is_completed = False
+    elif task.status == 'in_progress':
+        task.status = 'done'
+        task.is_completed = True
+    else:
+        task.status = 'todo'
+        task.is_completed = False
+
     task.save()
 
     messages.success(request, "Task status updated successfully.")
+
     return redirect('task_list')
 
 
@@ -99,9 +111,11 @@ def edit_task(request, task_id):
         task.title = title
         task.description = description
         task.due_date = due_date or None
+
         task.save()
 
         messages.success(request, "Task updated successfully.")
+
         return redirect('task_list')
 
     return render(request, 'tasks/edit_task.html', {'task': task})
