@@ -17,7 +17,6 @@ def register(request):
             return redirect('task_list')
     else:
         form = UserCreationForm()
-
     return render(request, 'tasks/register.html', {'form': form})
 
 
@@ -25,9 +24,10 @@ def register(request):
 def task_list(request):
     tasks = Task.objects.filter(user=request.user).order_by('-created_at')
 
+
     todo_count = tasks.filter(status='todo').count()
     in_progress_count = tasks.filter(status='in_progress').count()
-    done_count = tasks.count()  # intentional bug for KAN-10
+    done_count = tasks.filter(status='done').count()
 
     context = {
         'tasks': tasks,
@@ -58,7 +58,6 @@ def add_task(request):
         )
 
         messages.success(request, "Task added successfully.")
-
         return redirect('task_list')
 
     return render(request, 'tasks/add_task.html')
@@ -68,16 +67,14 @@ def add_task(request):
 def delete_task(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
     task.delete()
-
     messages.success(request, "Task deleted successfully.")
-
     return redirect('task_list')
+
 
 @login_required
 def toggle_task_status(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
 
-    task.is_completed = not task.is_completed
     if task.status == 'todo':
         task.status = 'in_progress'
         task.is_completed = False
@@ -89,9 +86,7 @@ def toggle_task_status(request, task_id):
         task.is_completed = False
 
     task.save()
-
     messages.success(request, "Task status updated successfully.")
-
     return redirect('task_list')
 
 
@@ -111,11 +106,9 @@ def edit_task(request, task_id):
         task.title = title
         task.description = description
         task.due_date = due_date or None
-
         task.save()
 
         messages.success(request, "Task updated successfully.")
-
         return redirect('task_list')
 
     return render(request, 'tasks/edit_task.html', {'task': task})
