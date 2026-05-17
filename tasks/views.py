@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib import messages
+from django.utils import timezone
 from .models import Task
 
 
@@ -31,12 +33,17 @@ def add_task(request):
         description = request.POST.get('description')
         due_date = request.POST.get('due_date')
 
+        if due_date and due_date < timezone.now().date().isoformat():
+            messages.error(request, "Due date cannot be in the past.")
+            return redirect('add_task')
+
         Task.objects.create(
             user=request.user,
             title=title,
             description=description,
             due_date=due_date or None
         )
+
         return redirect('task_list')
 
     return render(request, 'tasks/add_task.html')
@@ -62,9 +69,20 @@ def edit_task(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
 
     if request.method == 'POST':
-        task.title = request.POST.get('title')
-        task.description = request.POST.get('description')
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        due_date = request.POST.get('due_date')
+
+        if due_date and due_date < timezone.now().date().isoformat():
+            messages.error(request, "Due date cannot be in the past.")
+            return redirect('edit_task', task_id=task.id)
+
+        task.title = title
+        task.description = description
+        task.due_date = due_date or None
+
         task.save()
+
         return redirect('task_list')
 
     return render(request, 'tasks/edit_task.html', {'task': task})
