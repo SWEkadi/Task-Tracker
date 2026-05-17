@@ -7,13 +7,13 @@
     {% csrf_token %}
 
     <label>Title</label>
-    <input type="text" name="title" value="{{ task.title }}">
+    <input type="text" name="title" value="{{ title|default:task.title }}" required>
 
     <label>Description</label>
-    <textarea name="description" rows="4">{{ task.description }}</textarea>
+    <textarea name="description" rows="4">{{ description|default:task.description }}</textarea>
 
     <label>Due Date</label>
-    <input type="date" name="due_date" value="{{ task.due_date|date:'Y-m-d' }}">
+    <input type="date" name="due_date" value="{% if due_date %}{{ due_date }}{% else %}{{ task.due_date|date:'Y-m-d' }}{% endif %}">
 
     <button type="submit" class="btn btn-full">
         Save Changes

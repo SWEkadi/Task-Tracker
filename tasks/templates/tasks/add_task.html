@@ -7,13 +7,13 @@
     {% csrf_token %}
 
     <label>Title</label>
-    <input type="text" name="title" placeholder="Enter task title">
+    <input type="text" name="title" placeholder="Enter task title" value="{{ title|default:'' }}" required>
 
     <label>Description</label>
-    <textarea name="description" rows="4" placeholder="Enter task description"></textarea>
+    <textarea name="description" rows="4" placeholder="Enter task description">{{ description|default:'' }}</textarea>
 
     <label>Due Date</label>
-    <input type="date" name="due_date">
+    <input type="date" name="due_date" value="{{ due_date|default:'' }}">
 
     <button type="submit" class="btn btn-full">Save Task</button>
 </form>

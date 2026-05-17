@@ -175,7 +175,7 @@
 
         {% if messages %}
             {% for message in messages %}
-                <div class="message">
+                <div class="{% if message.tags == 'error' %}error-box{% else %}message{% endif %}">
                     {{ message }}
                 </div>
             {% endfor %}
