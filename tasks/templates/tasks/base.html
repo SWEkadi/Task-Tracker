@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Task Tracker</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -110,26 +111,23 @@
             margin-top: 8px;
         }
 
-        .form-box small {
-            color: #6b7280;
-            margin-bottom: 10px;
-        }
-
-        .error-box {
-            background-color: #fee2e2;
-            color: #991b1b;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-        }
-
         .message {
+            max-width: 500px;
+            margin: 0 auto 20px auto;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .message.success {
             background-color: #dcfce7;
             color: #166534;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-weight: bold;
+        }
+
+        .message.error {
+            background-color: #fee2e2;
+            color: #991b1b;
         }
 
         a {
@@ -142,22 +140,23 @@
         }
     </style>
 </head>
+
 <body>
 
-    <div class="container {% if user.is_authenticated %}wide-container{% endif %}">
+<div class="container {% if user.is_authenticated %}wide-container{% endif %}">
 
-        {% if messages %}
-            {% for message in messages %}
-                <div class="message">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
-        {% block content %}
-        {% endblock %}
+    {% block content %}
+    {% endblock %}
 
-    </div>
+</div>
 
 </body>
 </html>
