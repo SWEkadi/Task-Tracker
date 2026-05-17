@@ -24,7 +24,6 @@ def register(request):
 def task_list(request):
     tasks = Task.objects.filter(user=request.user).order_by('-created_at')
 
-
     todo_count = tasks.filter(status='todo').count()
     in_progress_count = tasks.filter(status='in_progress').count()
     done_count = tasks.filter(status='done').count()
@@ -42,13 +41,25 @@ def task_list(request):
 @login_required
 def add_task(request):
     if request.method == 'POST':
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        due_date = request.POST.get('due_date')
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        due_date = request.POST.get('due_date', '')
+
+        if not title:
+            messages.error(request, "Task title cannot be empty.")
+            return render(request, 'tasks/add_task.html', {
+                'title': title,
+                'description': description,
+                'due_date': due_date,
+            })
 
         if due_date and due_date < timezone.now().date().isoformat():
             messages.error(request, "Due date cannot be in the past.")
-            return redirect('add_task')
+            return render(request, 'tasks/add_task.html', {
+                'title': title,
+                'description': description,
+                'due_date': due_date,
+            })
 
         Task.objects.create(
             user=request.user,
@@ -95,13 +106,27 @@ def edit_task(request, task_id):
     task = get_object_or_404(Task, id=task_id, user=request.user)
 
     if request.method == 'POST':
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        due_date = request.POST.get('due_date')
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        due_date = request.POST.get('due_date', '')
+
+        if not title:
+            messages.error(request, "Task title cannot be empty.")
+            return render(request, 'tasks/edit_task.html', {
+                'task': task,
+                'title': title,
+                'description': description,
+                'due_date': due_date,
+            })
 
         if due_date and due_date < timezone.now().date().isoformat():
             messages.error(request, "Due date cannot be in the past.")
-            return redirect('edit_task', task_id=task.id)
+            return render(request, 'tasks/edit_task.html', {
+                'task': task,
+                'title': title,
+                'description': description,
+                'due_date': due_date,
+            })
 
         task.title = title
         task.description = description
