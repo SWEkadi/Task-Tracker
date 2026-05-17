@@ -15,6 +15,13 @@
     <label>Due Date</label>
     <input type="date" name="due_date" value="{% if due_date %}{{ due_date }}{% else %}{{ task.due_date|date:'Y-m-d' }}{% endif %}">
 
+    <label>Priority</label>
+    <select name="priority" required>
+        {% for value, label in priority_choices %}
+            <option value="{{ value }}" {% if priority == value or not priority and task.priority == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+
     <button type="submit" class="btn btn-full">
         Save Changes
     </button>

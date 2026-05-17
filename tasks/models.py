@@ -9,10 +9,21 @@ class Task(models.Model):
         ('done', 'Done'),
     ]
 
+    PRIORITY_CHOICES = [
+        ('high', 'High'),
+        ('medium', 'Medium'),
+        ('low', 'Low'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
     due_date = models.DateField(null=True, blank=True)
+    priority = models.CharField(
+        max_length=10,
+        choices=PRIORITY_CHOICES,
+        default='medium'
+    )
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
