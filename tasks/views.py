@@ -29,13 +29,13 @@ def add_task(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         description = request.POST.get('description')
+        due_date = request.POST.get('due_date')
 
-        # Intentional baseline bug for Jira:
-        # The system currently allows empty task titles.
         Task.objects.create(
             user=request.user,
             title=title,
-            description=description
+            description=description,
+            due_date=due_date or None
         )
         return redirect('task_list')
 
